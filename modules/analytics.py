@@ -1,7 +1,7 @@
 import streamlit as st
 
 def render_analytics_tab(csv_file):
-    # İstediğin gibi tüm o üst yazıları ve "Test Sürümü" yazılarını komple sildik amınakoyim!
+    # İstediğin gibi en üstteki o başlıkları ve test sürümü yazılarını tamamen kazıdık amınakoyim!
     st.markdown("""
         <style>
             .stSlider [data-baseweb="slider"] { margin-bottom: 20px; }

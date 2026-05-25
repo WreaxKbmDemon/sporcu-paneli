@@ -41,7 +41,7 @@ if not df_read_init.empty and "Gunluk_Not" in df_read_init.columns:
     if pd.notna(son_not) and str(son_not).strip() != "":
         varsayilan_not = str(son_not)
 
-# 🗂️ O ESKİ GEREKSİZ TÜM SEKMELERİ SİLDİK VE "ARAÇLAR"A ÇEVİRDİK AMINAKOYIM
+# 🗂️ ESKİ SEKME YAPISI TAMAMEN SİLİNDİ, DÜZGÜNCE 6 SEKME BIRAKILDI
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "👤 Sporcu Paneli", "📝 Veri Girişi", "🍗 Beslenme", 
     "🏃‍♂️ Kardiyo", "🏋️‍♂️ Antrenman", "🧱 ARAÇLAR"
@@ -108,6 +108,6 @@ with tab4:
 with tab5:
     render_workout_tab()
 
-# TAB 6: ARAÇLAR (YENİLENEN MODÜL ENJEKSİYONU 🚀)
+# TAB 6: ARAÇLAR (YENİLENEN REPLİKA PANELİ 🚀)
 with tab6:
     render_analytics_tab(CSV_FILE)
