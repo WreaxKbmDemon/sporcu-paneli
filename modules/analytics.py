@@ -122,11 +122,11 @@ def render_analytics_tab(csv_file):
     with st.expander("⚖️ Boy Kilo Endeksi ve Yorumlama Rehberi"):
         st.markdown("""
         ### Boy Kilo Endeksi Nedir? Nasıl Hesaplanır?
-        Boy Kilo Endeksi (BKE), vücut ağırlığını boy ile karşılaştıran ve sağlık riskini değerlendirmeye yardımcı olan bir ölçümdür. Bu hesap makinesinde kullanılan endeks, geleneksel VKİ formülünden farklı bir yaklaşım benimseyerek boya göreli ağırlık dağılımını değerlendirir. Özellikle Çin ve Uzak Doğu kaynaklı tıp araştırmalarında yaygın kullanım alanı bulan bu yöntem, Asya popülasyonuna özgü sağlık riski eşiklerini daha doğru yansıtır.
+        Boy Kilo Endeksi (BKE), vücut ağırlığını boy ile karşılaştıran ve sağlık riskini değerlendirmeye yardımcı olan bir ölçümdür. Bu hesap makinesinde kullanılan endeks, geleneksel VKİ formülünden farklı bir yaklaşım benimseyerek boya göreli ağırlık dağılımını değerlendirir. Özellikle Çin ve Uzak Doğu kaynaklı tıp araştırmalarında yaygın kullanım alanıulan bu yöntem, Asya popülasyonuna özgü sağlık riski eşiklerini daha doğru yansıtır.
         
         Standart VKİ hesabında boy'un karesi paydada yer alırken, bazı boy kilo endeksi uygulamaları farklı ağırlıklandırma faktörleri kullanır. Bu yaklaşım, boy ile kilo arasındaki orantısallık ilişkisini farklı bir perspektiften ele alarak aynı VKİ değerine sahip ancak farklı boylu bireyler arasındaki sağlık farklılıklarını daha iyi açıklamaya çalışır.
         
-        ### Sonuçları Nasıl Yorummalısın?
+        ### Sonuçları Nasıl Yorumlamalısın?
         * **Zayıf (VKİ < 18.5):** Yetersiz kalori alımı, kas kaybı riski, bağışıklık sistemi zayıflığı ve kemik yoğunluğu kaybı görülebilir.
         * **Normal (18.5 – 24.9):** Kardiyovasküler hastalık, tip 2 diyabet ve hipertansiyon riski en düşük aralıktır.
         * **Fazla Kilolu (25 – 29.9):** Kronik hastalık riski yükselmeye başlar. Özellikle bel çevresi 94 cm'yi (erkek) veya 80 cm'yi (kadın) aşıyorsa risk anlamlı düzeyde artar.
@@ -166,6 +166,20 @@ def render_analytics_tab(csv_file):
         * **Protein (4 kcal / gram):** Kas dokusu, enzimler ve hormonların yapı taşıdır. Sindirimi için harcanan termik etki en yüksek gruptur (%20-30).
         * **Karbonhidrat (4 kcal / gram):** Beynin ve kasların tercih ettiği birincil yakıt kaynağıdır. Glikojen olarak kaslarda depolanır.
         * **Yağ (9 kcal / gram):** Hormon üretimi (özellikle testosteron ve östrojen) için vazgeçilmezdir. Minimum %20 yağ alımının altına düşülmemelidir.
+        """)
+
+    with st.expander("⚖️ İdeal Kilo Hesaplama ve Formüller"):
+        st.markdown("""
+        ### İdeal Kilo Nedir? Nasıl Hesaplanır?
+        İdeal kilo, belirli bir boy için sağlık riskleri ve yaşam kalitesi açısından en uygun vücut ağırlığı aralığını ifade eden kavramdır.
+        
+        ### Kullanılan Başlıca Bilimsel Formüller:
+        * **Devine Formülü (1974)**
+        * **Robinson Formülü (1983)**
+        * **Miller Formülü (1983)**
+        * **Hamwi Formülü**
+        
+        Kademeli ilerleme, alışkanlık geliştirme ve yaşam tarzı değişiklikleri; hedefe çok daha kalıcı biçimde ulaşmayı sağlar. Yo-yo etkisini önlemenin en güçlü stratejisi, kilo verme sürecinde kas kütlesini korumaktır. Bunu sağlamanın yolu ise yeterli protein alımı ve düzenli direnç antrenmanıdır.
         """)
 
     with st.expander("📐 US Navy Vücut Yağ Oranı Laboratuvarı"):
@@ -219,4 +233,40 @@ def render_analytics_tab(csv_file):
         
         ### Sabah Protein Tüketiminin Önemi
         Uyku sırasındaki uzun süreli açlıktan sonra vücutta kas yıkımı üstün gelmeye başlar. Sabah yüksek protein içeren bir kahvaltı, bu yıkım sürecini durdurup anabolizmayı (yapımı) anında başlatır amınakoyim!
+        """)
+
+    with st.expander("⏱️ Setler Arası Dinlenme Süresi ve Kas Toparlanması"):
+        st.markdown("""
+        ### Setler Arası Dinlenme Neden Önemlidir?
+        Setler arası dinlenme süresi; performansı, kas uyarımını, hormonsal yanıtı ve enerji sistemlerinin kullanımını doğrudan etkiler. Dinlenmenin fizyolojik temeli ATP-PCr (fosfokreatin) sisteminin yenilenmesine dayanır.
+        
+        ### Hedefe Göre Dinlenme Süreleri:
+        * **Maksimal Güç:** 3 – 5 dakika (%85-100 1RM yüklerinde).
+        * **Hipertrofi (Kas Büyümesi):** 60 – 90 saniye (Metabolik stres birikimi).
+        * **Güç Dayanıklılığı:** 30 – 60 saniye (Kardiyovasküler ve kas dayanıklılığı kapasitesi).
+        
+        ### Kaslar Ne Zaman Büyür?
+        Çok yaygın bir yanılgıyı düzeltmek gerekir: **Kaslar antrenman sırasında değil, sonrasında büyür.** Egzersiz kas dokusunda mikroskobik hasarlar oluşturur ve derin uyku evrelerinde büyüme hormonu (GH) salgılanarak protein senteziyle bu dokular tamir edilir.
+        """)
+
+    with st.expander("📏 Bel-Kalça Oranı ve Visseral Yağ Riskleri"):
+        st.markdown("""
+        ### Bel Kalça Oranı Nedir? Nasıl Hesaplanır?
+        Bel-kalça oranı (BKO), bel çevresinin kalça çevresine bölünmesiyle elde edilen basit ancak bilgilendirici bir sağlık göstergesidir: $BKO = Bel \\div Kalça$.
+        
+        ### Cinsiyete Göre Risk Eşikleri:
+        * **Düşük Risk:** Erkeklerde $\le 0.90$ | Kadınlarda $\le 0.80$
+        * **Orta Risk:** Erkeklerde $0.91 - 0.99$ | Kadınlarda $0.81 - 0.85$
+        * **Yüksek Risk:** Erkeklerde $\ge 1.0$ | Kadınlarda $\ge 0.86$ (İç organ yağlanması tehlikesi!)
+        """)
+
+    with st.expander("🧬 Üç Temel Vücut Tipi ve Genetik Yapı Şablonları"):
+        st.markdown("""
+        ### Vücut Tiplerinin Özellikleri:
+        * **Ektomorf:** İnce kemik yapısı, hızlı metabolizma, düşük doğal kas kütlesi. Kilo almakta ve kas yapmakta güçlük çeker.
+        * **Mezomorf:** Atletik yapı, orta-geniş kemik çerçevesi, hızlı kas yanıtı. Kas kazanımına ve yağ yakmaya en yatkın tip.
+        * **Endomorf:** Geniş kemik yapısı, yavaş metabolizma, yağ depolamaya yüksek eğilim. Kas kazanımı görece kolaydır ancak yağlanmaya müsaittir.
+        
+        ### Vücut Tipi Kader midir?
+        **Kesinlikle hayır.** Epigenetik araştırmalar, genetik eğilimlerin yaşam tarzı seçimleriyle (disiplinli beslenme ve direnç antrenmanı programlarıyla) tamamen değiştirilebileceğini ve fenotipik ifadesinin dönüştürülebileceğini göstermektedir amınakoyim!
         """)
