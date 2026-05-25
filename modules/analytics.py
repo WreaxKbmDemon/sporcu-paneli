@@ -3,74 +3,131 @@ import pandas as pd
 import math
 
 def render_analytics_tab(csv_file):
-    st.title("🧱 SPORCU LABORATUVARI (MİLİMETRİK KALİBRASYON)")
-    st.write("Verilerini gir, gokalaf.com algoritmasıyla birebir sonuçları kendi sisteminde gör amınakoyim!")
+    st.title("🧱 gokalaf.com ARAÇLAR PROTOKOLÜ V4.5")
+    st.write("Siteden çekilen JavaScript mantığıyla %100 senkronize çalışır amınakoyim!")
     st.write("---")
 
     # ==========================================
-    # 🔥 1. ARAÇ: KALORİ & MAKRO HESAPLAMA ÜSSÜ
+    # 🗂️ 1. ARAÇ: BOY KİLO ENDEKSİ (BİREBİR REPLİKA)
     # ==========================================
-    st.subheader("🔥 KALORİ VE MAKRO REAKTÖRÜ")
+    st.subheader("🟢 BOY KİLO ENDEKSİ")
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("<div style='background-color: #161B22; padding: 10px; border-radius: 8px; border: 1px solid #FFA500; margin-bottom:10px;'>⚡ BİLGİLERİNİZ</div>", unsafe_allow_html=True)
-        cal_yas = st.slider("YAŞ:", min_value=10, max_value=80, value=16, key="lab_yas")
-        cal_cins = st.selectbox("CİNSİYET:", ["Erkek", "Kadın"], key="lab_cins")
-        cal_boy = st.slider("BOY (cm):", min_value=120, max_value=220, value=173, key="lab_boy")
-        cal_kilo = st.slider("KİLO (kg):", min_value=40.0, max_value=150.0, value=71.25, step=0.05, key="lab_kilo")
-        
-        cal_akt = st.selectbox(
-            "AKTİVİTE:", 
-            ["Hareketsiz", "Hafif Aktif (Haftada 1-3 gün)", "Orta Aktif (Haftada 3-5 gün)", "Çok Aktif (Haftada 6-7 gün)", "Sporcu (Günde 2 idman)"],
-            index=2, key="lab_akt"
-        )
-        
-        # Gokalaf buton yapısı
-        cal_hed = st.radio("HEDEF:", ["KİLO VER", "KORU", "KAS YAP"], index=0, key="lab_hed")
-        p_orani = st.slider("PROTEİN ORANI (%):", min_value=20, max_value=50, value=30, step=5, key="lab_poran")
-        st.caption("Yağ %25 sabit, kalan enerji karbonhidrata dağıtılır.")
-        
-        btn_cal = st.button("🚀 HESAPLA", key="btn_gokalaf_core")
+        st.markdown("<div style='background-color: #161B22; padding: 10px; border-radius: 8px; border: 1px solid #00FFCC;'>📋 ÖLÇÜMLERİNİZ</div>", unsafe_allow_html=True)
+        bke_boy = st.slider("Boyunuz (cm):", min_value=140, max_value=220, value=170, key="bke_boy_slider")
+        bke_kilo = st.slider("Kilonuz (kg):", min_value=35, max_value=160, value=70, key="bke_kilo_slider")
+        bke_cins = st.selectbox("Cinsiyetiniz:", ["Erkek", "Kadın"], key="bke_cins_select")
+        btn_bke = st.button("🚀 BOY KİLO ENDEKSİ HESAPLA", key="btn_bke_trigger")
 
     with col2:
-        if btn_cal:
-            # Gokalaf Orijinal Mifflin-St Jeor Formülü
-            if cal_cins == "Erkek":
-                bmr = (10.0 * cal_kilo) + (6.25 * cal_boy) - (5.0 * cal_yas) + 5.0
-            else:
-                bmr = (10.0 * cal_kilo) + (6.25 * cal_boy) - (5.0 * cal_yas) - 161.0
-                
-            # Kusursuz Aktivite Çarpanları
-            carpanlar = {"Hareketsiz": 1.2, "Hafif Aktif (Haftada 1-3 gün)": 1.375, "Orta Aktif (Haftada 3-5 gün)": 1.55, "Çok Aktif (Haftada 6-7 gün)": 1.725, "Sporcu (Günde 2 idman)": 1.9}
-            tdee = bmr * carpanlar[cal_akt]
+        if btn_bke:
+            # JS Motorundaki formül: kg / (m^2)
+            bke_sonuc = bke_kilo / ((bke_boy / 100) ** 2)
             
-            # Hedef Kalori Ayarı
-            if cal_hed == "KİLO VER": nihai_kalori = tdee - 500
-            elif cal_hed == "KAS YAP": nihai_kalori = tdee + 300
+            # İdeal Kilo Aralığı Hesabı (JS kodundaki alt/üst sınırlar)
+            ideal_alt = 18.5 * ((bke_boy / 100) ** 2)
+            ideal_ust = 24.9 * ((bke_boy / 100) ** 2)
+            
+            # JS durum kontrol mekanizması
+            if bke_sonuc < 18.5:
+                durum_renk = "#FFCC00"
+                durum_metni = "Düşük Kilolu"
+                tavsiye = "Sağlıklı şekilde kütle kazanmaya odaklan aslanım."
+            elif 18.5 <= bke_sonuc < 25:
+                durum_renk = "#00FFCC"
+                durum_metni = "SĂĞLIKLI"
+                tavsiye = "Harika! Formunu koru. Boy ve kilonuz dengeli."
+            elif 25 <= bke_sonuc < 30:
+                durum_renk = "#FFA500"
+                durum_metni = "Yüksek Kilolu"
+                tavsiye = "Hafif bir kalori açığı ve kararlı kardiyo ile yağ yakımına başla."
+            else:
+                durum_renk = "#FF0055"
+                durum_metni = "Riskli Seviye"
+                tavsiye = "Hardcore bir definasyon reaktörünü devreye almamız şart amınakoyim."
+
+            st.markdown(f"""
+            <div style='background-color: #161B22; padding: 20px; border-radius: 12px; border: 2px solid {durum_renk}; min-height: 250px; text-align: center;'>
+                <h3 style='color: #8B949E !important; margin-top:0;'>BOY KİLO ENDEKSİNİZ</h3>
+                <h1 style='color: #FFFFFF !important; font-size: 50px; margin: 5px 0;'>{bke_sonuc:.1f} <span style='font-size:16px; color:{durum_renk}; background-color:rgba(0,255,204,0.1); padding:4px 8px; border-radius:4px;'>{durum_metni}</span></h1>
+                <p style='color: #FFFFFF; font-weight: bold; margin-top:15px;'>{tavsiye}</p>
+                <hr style='border-color: #30363D;'>
+                <div style='display: flex; justify-content: space-between; margin-top:10px;'>
+                    <span style='color: #8B949E;'>İdeal Kilo Aralığı:</span>
+                    <span style='color: #00FFCC; font-weight:bold;'>{ideal_alt:.1f} - {ideal_ust:.1f} kg</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style='background-color: #161B22; padding: 85px 20px; border-radius: 12px; border: 1px dashed #30363D; text-align: center; min-height: 250px;'>
+                <h2 style='color: #8B949E !important;'>⚖️ SONUÇ BEKLENİYOR</h2>
+                <p style='color: #8B949E;'>Verilerini gir ve hesapla butonuna bas amınakoyim.</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.write("---")
+
+    # ==========================================
+    # 🧮 2. ARAÇ: TDEE VE MAKRO SENSÖRÜ (BİREBİR REPLİKA)
+    # ==========================================
+    st.subheader("🔥 TDEE VE MAKRO HESAPLAMA ÜSSÜ")
+    col3, col4 = st.columns(2)
+    
+    with col3:
+        st.markdown("<div style='background-color: #161B22; padding: 10px; border-radius: 8px; border: 1px solid #FFA500;'>🔥 BİLGİLERİNİZ</div>", unsafe_allow_html=True)
+        t_yas = st.slider("Yaşınız:", min_value=10, max_value=80, value=16, key="t_yas_v45")
+        t_boy = st.slider("Boy (cm):", min_value=120, max_value=220, value=173, key="t_boy_v45")
+        t_kilo = st.slider("Kilo (kg):", min_value=40.0, max_value=150.0, value=71.25, step=0.05, key="t_kilo_v45")
+        t_cins = st.selectbox("Cinsiyet:", ["Erkek", "Kadın"], key="t_cins_v45")
+        
+        t_akt = st.selectbox(
+            "Aktivite Seviyesi:", 
+            ["Hareketsiz", "Hafif Aktif", "Orta Aktif", "Çok Aktif", "Sporcu"],
+            index=2, key="t_akt_v45"
+        )
+        t_hed = st.radio("Hedefiniz:", ["KİLO VER", "KORU", "KAS YAP"], index=0, key="t_hed_v45")
+        t_p_oran = st.slider("Protein Oranı (%):", min_value=20, max_value=50, value=30, step=5, key="t_poran_v45")
+        
+        btn_tdee = st.button("🔥 TDEE VE MAKRO HESAPLA", key="btn_tdee_v45")
+
+    with col4:
+        if btn_tdee:
+            # JS Mifflin-St Jeor Milimetrik Altyapısı
+            if t_cins == "Erkek":
+                bmr = (10.0 * t_kilo) + (6.25 * t_boy) - (5.0 * t_yas) + 5.0
+            else:
+                bmr = (10.0 * t_kilo) + (6.25 * t_boy) - (5.0 * t_yas) - 161.0
+                
+            carpanlar = {"Hareketsiz": 1.2, "Hafif Aktif": 1.375, "Orta Aktif": 1.55, "Çok Aktif": 1.725, "Sporcu": 1.9}
+            tdee = bmr * carpanlar[t_akt]
+            
+            if t_hed == "KİLO VER": nihai_kalori = tdee - 500
+            elif t_hed == "KAS YAP": nihai_kalori = tdee + 300
             else: nihai_kalori = tdee
             
-            # Makro Dağılım Hesabı
-            p_gram = (nihai_kalori * (p_orani / 100)) / 4
+            # JS Orijinal Makro Dağılım Bölümü
+            p_gram = (nihai_kalori * (t_p_oran / 100)) / 4
             f_gram = (nihai_kalori * 0.25) / 9
-            c_gram = (nihai_kalori * ((100 - p_orani - 25) / 100)) / 4
-            
+            c_gram = (nihai_kalori * ((100 - t_p_oran - 25) / 100)) / 4
+
             st.markdown(f"""
-            <div style='background-color: #161B22; padding: 25px; border-radius: 12px; border: 2px solid #00FFCC; min-height: 350px;'>
-                <h3 style='color: #00FFCC !important; text-align: center; margin-top:0;'>🎯 HESAPLAMA SONUÇLARI</h3>
+            <div style='background-color: #161B22; padding: 25px; border-radius: 12px; border: 2px solid #00FFCC; min-height: 400px;'>
+                <h3 style='color: #00FFCC !important; text-align: center; margin-top:0;'>🎯 ENJEKSİYON RAPORU</h3>
                 <hr style='border-color: #30363D;'>
-                <h1 style='color: #FFFFFF !important; text-align: center; font-size: 42px; margin: 15px 0;'>{int(nihai_kalori)} <span style='font-size:20px; color:#00FFCC;'>kcal</span></h1>
+                <h1 style='color: #FFFFFF !important; text-align: center; font-size: 45px; margin: 10px 0;'>{int(nihai_kalori)} <span style='font-size:20px; color:#00FFCC;'>kcal</span></h1>
                 <p style='color: #8B949E; text-align: center; font-weight: bold;'>GÜNLÜK HEDEF ENERJİ</p>
-                <div style='margin-top: 25px;'>
-                    <div style='display: flex; justify-content: space-between; margin: 8px 0; padding: 10px; background-color: #0E1117; border-radius: 6px;'>
-                        <span style='color: #FFFFFF; font-weight:bold;'>🍗 PROTEİN (%{p_orani}):</span>
+                <div style='margin-top: 20px;'>
+                    <div style='display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background-color: #0E1117; border-radius: 6px;'>
+                        <span style='color: #FFFFFF; font-weight:bold;'>🍗 PROTEİN (%{t_p_oran}):</span>
                         <span style='color: #00FFCC; font-weight:bold;'>{int(p_gram)} Gram</span>
                     </div>
-                    <div style='display: flex; justify-content: space-between; margin: 8px 0; padding: 10px; background-color: #0E1117; border-radius: 6px;'>
-                        <span style='color: #FFFFFF; font-weight:bold;'>🍚 KARBONHİDRAT (%{100-p_orani-25}):</span>
+                    <div style='display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background-color: #0E1117; border-radius: 6px;'>
+                        <span style='color: #FFFFFF; font-weight:bold;'>🍚 KARBONHİDRAT (%{100-t_p_oran-25}):</span>
                         <span style='color: #FFA500; font-weight:bold;'>{int(c_gram)} Gram</span>
                     </div>
-                    <div style='display: flex; justify-content: space-between; margin: 8px 0; padding: 10px; background-color: #0E1117; border-radius: 6px;'>
+                    <div style='display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background-color: #0E1117; border-radius: 6px;'>
                         <span style='color: #FFFFFF; font-weight:bold;'>🥑 YAĞ (%25):</span>
                         <span style='color: #FF0055; font-weight:bold;'>{int(f_gram)} Gram</span>
                     </div>
@@ -79,51 +136,7 @@ def render_analytics_tab(csv_file):
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
-            <div style='background-color: #161B22; padding: 100px 20px; border-radius: 12px; border: 1px dashed #30363D; text-align: center; min-height: 350px;'>
+            <div style='background-color: #161B22; padding: 130px 20px; border-radius: 12px; border: 1px dashed #30363D; text-align: center; min-height: 400px;'>
                 <h2 style='color: #8B949E !important;'>🔥 SONUÇ BEKLENİYOR</h2>
-                <p style='color: #8B949E;'>Bilgilerinizi girin ve HESAPLA butonuna basın aslanım.</p>
             </div>
             """, unsafe_allow_html=True)
-
-    st.write("---")
-
-    # ==========================================
-    # 📐 2. ARAÇ: YAĞ ORANI & PERFORMANCE & SU (3'LÜ GRİD)
-    # ==========================================
-    col3, col4, col5 = st.columns(3)
-
-    with col3:
-        st.markdown("<div style='background-color: #161B22; padding: 10px; border-radius: 8px; border: 1px solid #9932CC; margin-bottom:10px;'>% ÖLÇÜMLERİNİZ (YAĞ)</div>", unsafe_allow_html=True)
-        y_boy = st.slider("BOY (cm):", min_value=120, max_value=220, value=173, key="y_boy_v5")
-        y_bel = st.slider("BEL ÇEVRESİ (cm):", min_value=50, max_value=150, value=78, key="y_bel_v5")
-        y_boyun = st.slider("BOYUN ÇEVRESİ (cm):", min_value=20, max_value=60, value=38, key="y_boyun_v5")
-        btn_yag = st.button("📐 YAĞ ORANI HESAPLA", key="btn_yag_v5")
-        
-        if btn_yag:
-            if y_bel > y_boyun:
-                yag_res = 86.010 * math.log10(y_bel - y_boyun) - 70.041 * math.log10(y_boy) + 36.76
-                st.success(f"🎯 Yağ Oranı: %{yag_res:.1f}")
-            else:
-                st.error("Hatalı Ölçü!")
-
-    with col4:
-        st.markdown("<div style='background-color: #161B22; padding: 10px; border-radius: 8px; border: 1px solid #FF0055; margin-bottom:10px;'>💪 PERFORMANSINIZ (1RM)</div>", unsafe_allow_html=True)
-        orm_w = st.slider("AĞIRLIK (kg):", min_value=10, max_value=250, value=100, key="orm_w_v5")
-        orm_r = st.slider("TEKRAR SAYISI:", min_value=1, max_value=20, value=2, key="orm_r_v5")
-        btn_orm = st.button("💪 1RM HESAPLA", key="btn_orm_v5")
-        
-        if btn_orm:
-            one_rm = orm_w if orm_r == 1 else orm_w * (1.0 + (orm_r / 30.0))
-            st.success(f"🚀 Tahmini 1RM: {one_rm:.1f} KG")
-
-    with col5:
-        st.markdown("<div style='background-color: #161B22; padding: 10px; border-radius: 8px; border: 1px solid #00FFFF; margin-bottom:10px;'>🚰 SU İHTİYACI</div>", unsafe_allow_html=True)
-        su_kilo = st.slider("KİLO (kg):", min_value=40, max_value=150, value=71, key="su_k_v5")
-        su_iklim = st.select_slider("İKLİM:", options=["Soğuk", "Normal", "Sıcak", "Çok Sıcak"], value="Normal", key="su_iklim_v5")
-        btn_su = st.button("🚰 SU HESAPLA", key="btn_su_v5")
-        
-        if btn_su:
-            su_ml = (su_kilo * 35)
-            if su_iklim == "Sıcak": su_ml += 500
-            elif su_iklim == "Çok Sıcak": su_ml += 1000
-            st.info(f"💧 Su Hedefi: {(su_ml/1000):.2f} Litre")
