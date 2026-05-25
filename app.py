@@ -11,7 +11,7 @@ from modules.analytics import render_analytics_tab
 from modules.supplement import render_supplement_tab
 
 # 🖥️ SAYFA YAPILANDIRMASI
-st.set_page_config(page_title="SPORCU PANELİ V2.5", layout="wide")
+st.set_page_config(page_title="SPORCU PANELİ V2.6", layout="wide")
 
 # 🎨 DIŞARIDAN CSS YÜKLEME
 def load_css(file_name):
@@ -21,8 +21,8 @@ def load_css(file_name):
 
 load_css("assets/style.css")
 
-st.title("⚡ MACROFLOW // SPORCU PANELİ - FULL HYPERDRIVE V2.5")
-st.write(f"⚙️ Sistem: 7 SEKMELİ KONTROL MERKEZİ AKTİF | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")
+st.title("⚡ MACROFLOW // SPORCU PANELİ - FULL HYPERDRIVE V2.6")
+st.write(f"⚙️ Sistem: AKILLI NOT BELLEĞİ AKTİF | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")
 
 CSV_FILE = "data/sporcu_verileri.csv"
 
@@ -33,7 +33,17 @@ if not os.path.exists(CSV_FILE):
     df_init = pd.DataFrame(columns=["Tarih", "Kilo", "Su_ml", "Gunluk_Not"])
     df_init.to_csv(CSV_FILE, index=False)
 
-# 🗂️ 7 EFSANE SEKME OLUŞTURULDU AMINAKOYIM
+# 🧠 VERİ TABANINDAN EN SON GİRİLEN NOTU OTOMATİK BELLEĞE ALMA
+df_read_init = pd.read_csv(CSV_FILE)
+varsayilan_not = "100 kg bench press 2 tekrar atıldı 15 eğim 5,5 hız 45 dakika kardio yapıldı."
+
+if not df_read_init.empty and "Gunluk_Not" in df_read_init.columns:
+    # Son satırdaki notu çek, eğer boş veya geçersizse yukarıdaki varsayılanı kullan
+    son_not = df_read_init["Gunluk_Not"].iloc[-1]
+    if pd.notna(son_not) and str(son_not).strip() != "":
+        varsayilan_not = str(son_not)
+
+# 🗂️ 7 EFSANE SEKME OLUŞTURULDU
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "👤 Sporcu Paneli", "📝 Veri Giriş Reaktörü", "📊 Gelişmiş Analiz", 
     "🍗 Beslenme Planı", "🏃‍♂️ Kardiyo Takip", "🏋️‍♂️ Antrenman Takip", "💊 Supplement & Hesaplayıcı"
@@ -58,7 +68,7 @@ with tab1:
         else:
             st.warning("⚠️ Veri tabanında veri yok!")
 
-# TAB 2: VERİ GİRİŞİ
+# TAB 2: VERİ GİRİŞİ (NOT SIFIRLANMA HATASI ÇÖZÜLDÜ 🚀)
 with tab2:
     st.subheader("🚀 Telefondan Anlık Veri Giriş Paneli")
     col_input1, col_input2 = st.columns(2)
@@ -67,7 +77,8 @@ with tab2:
     with col_input2:
         input_su = st.number_input("Bugün İçilen Toplam Su (ml):", min_value=0, max_value=10000, value=3000, step=250)
         
-    input_not = st.text_input("Bugünkü Zafer Notlarınız (İdman Raporu / Hissiyat):", value="100 kg bench press 2 tekrar atıldı 15 eğim 5,5 hız 45 dakika kardio yapıldı.")
+    # Kutunun içi artık her zaman CSV'deki en güncel notunla dolu gelecek amınakoyim!
+    input_not = st.text_input("Bugünkü Zafer Notlarınız (İdman Raporu / Hissiyat):", value=varsayilan_not)
         
     if st.button("🔥 VERİLERİ VE NOTU VERİ TABANINA MÜHÜRLE"):
         df_current = pd.read_csv(CSV_FILE)
@@ -82,12 +93,13 @@ with tab2:
             df_current = pd.concat([df_current, new_row], ignore_index=True)
             
         df_current.to_csv(CSV_FILE, index=False)
-        st.success(f"✅ Veriler ve Notunuz başarıyla mühürlendi!")
+        st.success(f"✅ Veriler ve Notunuz başarıyla mühürlendi! Sayfayı yenileyebilirsin aslanım.")
+        st.rerun() # Belleği anında güncellemesi için re-run tetikledik
 
     st.write("---")
     st.dataframe(pd.read_csv(CSV_FILE), use_container_width=True)
 
-# TAB 3: GELİŞMİŞ ANALİZ (YENİ MODÜL 🚀)
+# TAB 3: GELİŞMİŞ ANALİZ
 with tab3:
     render_analytics_tab(CSV_FILE)
 
@@ -111,6 +123,6 @@ with tab5:
 with tab6:
     render_workout_tab()
 
-# TAB 7: SUPPLEMENT VE HESAPLAYICI (YENİ MODÜL 🚀)
+# TAB 7: SUPPLEMENT VE HESAPLAYICI
 with tab7:
     render_supplement_tab()
