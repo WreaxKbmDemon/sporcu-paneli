@@ -45,7 +45,7 @@ with tab1:
     col1, col2 = st.columns([1, 2])
     with col1:
         st.subheader("📋 Sporcu Profil Logları")
-        st.info("**Eren** | 16 Yaş (9-Bilişim)\n\n**Boy:** 173 cm | **Bel:** 78 cm 🎯\n\n**Durum:** Canavar Modu")
+        st.info("**Eren** | 16 Yaş (9-Bilişim)\n\n**Boy:** 173 cm | **Bel:** 78 cm 🎯\n\n**Durum:** Yağ Oranı %11,5-11")
         st.subheader("🔥 Günlük Makro Çıktısı")
         st.code("Kalori: ~1700-2000 kcal\nProtein: ~140-195.5g (Çiğden)\nCarb: ~137.2-250g\nSu Hedefi: 4.5 - 5 Litre 🚰")
     with col2:
