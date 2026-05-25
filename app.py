@@ -9,7 +9,6 @@ from modules.workout import render_workout_tab
 from modules.nutrition import render_nutrition_tab
 from modules.analytics import render_analytics_tab
 from modules.supplement import render_supplement_tab
-
 from modules.cardio import render_cardio_tab
 
 # 🖥️ SAYFA YAPILANDIRMASI
@@ -24,7 +23,7 @@ def load_css(file_name):
 load_css("assets/style.css")
 
 st.title("⚡ MACROFLOW // SPORCU PANELİ - FULL HYPERDRIVE V2.6")
-st.write(f"⚙️ Sistem: AKILLI NOT BELLEĞİ AKTİF | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")
+st.write(f"⚙️ Sistem: AKILLI NOT BELLEĞİ + MODÜLER MİMARİ AKTİF | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")
 
 CSV_FILE = "data/sporcu_verileri.csv"
 
@@ -40,7 +39,6 @@ df_read_init = pd.read_csv(CSV_FILE)
 varsayilan_not = "100 kg bench press 2 tekrar atıldı 15 eğim 5,5 hız 45 dakika kardio yapıldı."
 
 if not df_read_init.empty and "Gunluk_Not" in df_read_init.columns:
-    # Son satırdaki notu çek, eğer boş veya geçersizse yukarıdaki varsayılanı kullan
     son_not = df_read_init["Gunluk_Not"].iloc[-1]
     if pd.notna(son_not) and str(son_not).strip() != "":
         varsayilan_not = str(son_not)
@@ -70,7 +68,7 @@ with tab1:
         else:
             st.warning("⚠️ Veri tabanında veri yok!")
 
-# TAB 2: VERİ GİRİŞİ (NOT SIFIRLANMA HATASI ÇÖZÜLDÜ 🚀)
+# TAB 2: VERİ GİRİŞİ
 with tab2:
     st.subheader("🚀 Telefondan Anlık Veri Giriş Paneli")
     col_input1, col_input2 = st.columns(2)
@@ -79,7 +77,6 @@ with tab2:
     with col_input2:
         input_su = st.number_input("Bugün İçilen Toplam Su (ml):", min_value=0, max_value=10000, value=3000, step=250)
         
-    # Kutunun içi artık her zaman CSV'deki en güncel notunla dolu gelecek amınakoyim!
     input_not = st.text_input("Bugünkü Zafer Notlarınız (İdman Raporu / Hissiyat):", value=varsayilan_not)
         
     if st.button("🔥 VERİLERİ VE NOTU VERİ TABANINA MÜHÜRLE"):
@@ -96,7 +93,7 @@ with tab2:
             
         df_current.to_csv(CSV_FILE, index=False)
         st.success(f"✅ Veriler ve Notunuz başarıyla mühürlendi! Sayfayı yenileyebilirsin aslanım.")
-        st.rerun() # Belleği anında güncellemesi için re-run tetikledik
+        st.rerun()
 
     st.write("---")
     st.dataframe(pd.read_csv(CSV_FILE), use_container_width=True)
@@ -109,15 +106,9 @@ with tab3:
 with tab4:
     render_nutrition_tab()
 
-# TAB 5: KARDİYO (MODÜLER YAPILANDIRMA 🚀)
+# TAB 5: KARDİYO (MODÜLER YAPILANDIRMA DÜZELTİLDİ 🚀)
 with tab5:
     render_cardio_tab()
-        "Gün": ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
-        "Tip": ["Koşu Bandı", "Koşu Bandı", "Koşu Bandı", "Koşu Bandı", "Koşu Bandı", "OFFDAY 💤", "OFFDAY 💤"],
-        "Eğim/Hız": ["15 / 5.5", "15 / 5.5", "15 / 5.5", "15 / 5.5", "15 / 5.5", "-", "-"],
-        "Süre": ["30 Dk ⏱️", "30 Dk", "30 Dk", "30 Dk", "30 Dk", "-", "-"],
-        "Durum": ["BİTTİ 🏆", "Bekliyor", "Bekliyor", "Bekliyor", "Bekliyor", "DİNLENME", "DİNLENME"]
-    }))
 
 # TAB 6: ANTRENMAN TAKİP
 with tab6:
