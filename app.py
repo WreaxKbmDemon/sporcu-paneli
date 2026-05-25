@@ -11,16 +11,13 @@ from modules.nutrition import render_nutrition_tab
 # 🖥️ SAYFA YAPILANDIRMASI VE DARK MODE ESTETİĞİ
 st.set_page_config(page_title="SPORCU PANELİ V2.3", layout="wide")
 
-st.markdown("""
-    <style>
-    .main { background-color: #0E1117; color: #FFFFFF; }
-    h1, h2, h3 { color: #00FFCC !important; font-family: 'Courier New', monospace; }
-    .stButton>button { background-color: #00FFCC; color: #000000; font-weight: bold; border-radius: 8px; width: 100%; }
-    .stTabs [data-baseweb="tab"] { color: #FFFFFF; font-size: 16px; font-weight: bold; }
-    .stTabs [data-baseweb="tab"]:hover { color: #00FFCC; }
-    .stTabs [aria-selected="true"] { color: #00FFCC !important; border-bottom-color: #00FFCC !important; }
-    </style>
-""", unsafe_allow_html=True)
+# 🎨 DIŞARIDAN CSS DOSYASINI YÜKLEME FONKSİYONU
+def load_css(file_name):
+    with open(file_name, "r", encoding="utf-8") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# CSS'i sisteme enjekte et
+load_css("assets/style.css")
 
 st.title("⚡ MACROFLOW // SPORCU PANELİ - MODULAR V2.3")
 st.write(f"⚙️ Sistem Kararlılığı: MODÜLER MİMARİ AKTİF | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")

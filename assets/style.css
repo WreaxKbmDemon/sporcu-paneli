@@ -1,0 +1,63 @@
+/* 🪐 GLOBAL DARK MODE & MEKANİK ARKA PLAN */
+.main {
+    background-color: #0E1117 !important;
+    color: #FFFFFF !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* 🟢 NEON BAŞLIKLAR VE BİLİŞİMSEL METİNLER */
+h1, h2, h3, h4, h5, h6 {
+    color: #00FFCC !important;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.3) !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+/* 🎛️ SEKMELERİN (TABS) HARDCORE ÖZELLEŞTİRİLMESİ */
+div[data-baseweb="tab-list"] {
+    background-color: #161B22 !important;
+    border-radius: 10px !important;
+    padding: 5px !important;
+    border: 1px solid #30363D !important;
+}
+
+div[data-baseweb="tab"] {
+    color: #8B949E !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease !important;
+}
+
+div[data-baseweb="tab"]:hover {
+    color: #00FFCC !important;
+}
+
+div[aria-selected="true"] {
+    color: #00FFCC !important;
+    background-color: #0E1117 !important;
+    border-radius: 8px !important;
+    border-bottom: 2px solid #00FFCC !important;
+}
+
+/* ⚡ REAKTÖR BUTONU - HIZLI VERİ GİRİŞİ */
+.stButton>button {
+    background: linear-gradient(135deg, #00FFCC 0%, #0099FF 100%) !important;
+    color: #000000 !important;
+    font-weight: 900 !important;
+    letter-spacing: 1px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+.stButton>button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 255, 204, 0.6) !important;
+    color: #000000 !important;
+}
+
+/* 📊 TABLOLAR VE VERİ ÇERÇEVELERİ */
+.stDataFrame, table {
+    border: 1px solid #30363D !important;
+    background-color: #161B22 !important;
+}
