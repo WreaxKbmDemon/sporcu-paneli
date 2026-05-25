@@ -51,7 +51,7 @@ with tab2:
     df_rutin = pd.DataFrame({
         "Gün": ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
         "Sabah KG": [71.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        "Su (ml)": [3003, 0, 0, 0, 0, 0, 0],
+        "Su (ml)": [3005, 0, 0, 0, 0, 0, 0],
         "Bugünkü Zafer Notları": ["100 kg bench press 2 tekrar atıldı 15 eğim 5,5 hız 45 dakika kardio yapıldı.", "", "", "", "", "", ""]
     })
     st.data_editor(df_rutin, use_container_width=True)
