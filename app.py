@@ -10,6 +10,8 @@ from modules.nutrition import render_nutrition_tab
 from modules.analytics import render_analytics_tab
 from modules.supplement import render_supplement_tab
 
+from modules.cardio import render_cardio_tab
+
 # 🖥️ SAYFA YAPILANDIRMASI
 st.set_page_config(page_title="SPORCU PANELİ V2.6", layout="wide")
 
@@ -107,11 +109,9 @@ with tab3:
 with tab4:
     render_nutrition_tab()
 
-# TAB 5: KARDİYO
+# TAB 5: KARDİYO (MODÜLER YAPILANDIRMA 🚀)
 with tab5:
-    st.subheader("⏱️ Haftalık Kardiyo Takip Matriksi")
-    st.success("PROTOKOL: 15 Eğim, 5.5 Hız, 30 Dakika Hafta İçi Hergün | HaftaSonu Offday (Kardio Yok)")
-    st.table(pd.DataFrame({
+    render_cardio_tab()
         "Gün": ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
         "Tip": ["Koşu Bandı", "Koşu Bandı", "Koşu Bandı", "Koşu Bandı", "Koşu Bandı", "OFFDAY 💤", "OFFDAY 💤"],
         "Eğim/Hız": ["15 / 5.5", "15 / 5.5", "15 / 5.5", "15 / 5.5", "15 / 5.5", "-", "-"],
