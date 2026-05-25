@@ -1,112 +1,156 @@
 import streamlit as st
+import math
 
 def render_analytics_tab(csv_file):
-    # CSS Tasarımı - Siberpunk Dark Mode ve Neon Geçiş Barları
+    # Siberpunk Dark Mode ve Neon Kart Tasarımları
     st.markdown("""
         <style>
-            .stSlider [data-baseweb="slider"] { margin-bottom: 20px; }
-            .result-box {
+            .stSlider [data-baseweb="slider"] { margin-bottom: 12px; }
+            .matrix-card {
                 background-color: #161B22;
-                padding: 25px;
-                border-radius: 16px;
-                min-height: 320px;
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #30363D;
+                margin-bottom: 15px;
             }
+            .neon-text-cyan { color: #00FFCC !important; font-weight: bold; }
+            .neon-text-orange { color: #FFA500 !important; font-weight: bold; }
+            .neon-text-pink { color: #FF0055 !important; font-weight: bold; }
+            .neon-text-purple { color: #9932CC !important; font-weight: bold; }
         </style>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    st.title("🧱 MULTI-FUNCTIONAL SPORCU LABORATUVARI (REAL-TIME)")
+    st.write("Attığın tüm bilimsel metinlerdeki formüller arka planda senkronize edildi. Değerleri değiştirdiğin an her şey otomatik hesaplanır amınakoyim!")
+    st.write("---")
 
-    with col1:
-        st.markdown("<h3 style='color: #FFFFFF; font-size: 18px;'>📋 ÖLÇÜMLERİNİZ</h3>", unsafe_allow_html=True)
-        st.write("Boy ve kilo bilgilerinizi slider ile değiştirdiğiniz an otomatik hesaplanır aslanım.")
-        
-        # Giriş Elemanları
-        d_boy = st.slider("Boyunuz (cm)", min_value=140, max_value=220, value=170, step=1, key="vki_auto_boy")
-        i_kilo = st.slider("Kilonuz (kg)", min_value=35.0, max_value=160.0, value=70.0, step=0.5, key="vki_auto_kilo")
-        w_cins = st.selectbox("Cinsiyetiniz", ["Erkek", "Kadın"], key="vki_auto_cins")
+    # 🎛️ SOL TARAF: DİNAMİK PARAMETRE SENSÖRLERİ (INPUTS)
+    col_in, col_out = st.columns([1, 1.2])
 
-    # 🔥 BUTON KONTROLÜNÜ KALDIRDIK! DEĞERLER DEĞİŞTİĞİ AN BURASI DOĞRUDAN ÇALIŞIR AMINAKOYIM!
-    with col2:
-        a_metre = d_boy / 100
-        n_vki = i_kilo / (a_metre * a_metre)
-        s_vki = round(n_vki, 1) # Tek basamak yuvarlama
+    with col_in:
+        st.markdown("### 🎛️ ANLIK GİRDİ PANELİ")
         
-        # İdeal Kilo Aralığı Sınırları
-        min_ideal = round(18.5 * a_metre * a_metre, 1)
-        max_ideal = round(24.9 * a_metre * a_metre, 1)
+        # Temel Fiziksel Parametreler
+        u_boy = st.slider("Boyunuz (cm):", min_value=140, max_value=220, value=173, step=1, key="lab_v7_boy")
+        u_kilo = st.slider("Kilonuz (kg):", min_value=35.0, max_value=160.0, value=71.25, step=0.05, key="lab_v7_kilo")
+        u_yas = st.slider("Yaşınız:", min_value=10, max_value=80, value=16, key="lab_v7_yas")
+        u_cins = st.selectbox("Cinsiyetiniz:", ["Erkek", "Kadın"], key="lab_v7_cins")
         
-        # Kategoriler ve Durum Eşleşmeleri
-        if s_vki < 18.5:
-            label = "Zayıf"
-            color = "#38bdf8" # Sky-400
-            bg_badge = "#0284c7" # Sky-500
-            aciklama = "Kilo almanız önerilir."
-            detay = "Yetersiz kalori alımı, kas kaybı riski, bağışıklık sistemi zayıflığı görülebilir. Dengeli beslenme ile sağlıklı kilo alımı hedeflenmelidir."
-        elif s_vki <= 24.9:
-            label = "Normal"
-            color = "#34d399" # Emerald-400
-            bg_badge = "#10b981" # Emerald-500
-            aciklama = "Harika! Formunu koru."
-            detay = "Boy ve kilonuz dengeli, betitneklikleriniz antlarman hamıştır. Kardiyovasküler hastalık ve diyabet riski en düşük aralıktır."
-        elif s_vki <= 29.9:
-            label = "Fazla Kilolu"
-            color = "#fbbf24" # Amber-400
-            bg_badge = "#f59e0b" # Amber-500
-            aciklama = "Kalori açığı oluşturmalısın."
-            detay = "Kronik hastalık riski yükselmeye başlar. Kalori kısıtlaması ve düzenli egzersizle ideal aralığa inmek mümkündür."
+        st.write("---")
+        # Gokalaf TDEE & Makro Parametreleri
+        u_akt = st.selectbox(
+            "Aktivite Seviyeniz:", 
+            ["Hareketsiz (1.2)", "Hafif Aktif (1.375)", "Orta Aktif (1.55)", "Çok Aktif (1.725)", "Ekstra Aktif (1.9)"],
+            index=2, key="lab_v7_akt"
+        )
+        u_hed = st.selectbox("Beslenme Hedefi:", ["KİLO VER (-500 kcal)", "KORU (±0 kcal)", "KAS YAP (+300 kcal)"], index=0, key="lab_v7_hed")
+        u_prot_pct = st.slider("Protein Enerji Oranı (%):", min_value=20, max_value=50, value=30, step=5, key="lab_v7_ppct")
+        
+        st.write("---")
+        # Gokalaf Vücut Yağ Oranı Parametreleri
+        u_bel = st.slider("Aç Karnına Bel Çevresi (cm):", min_value=50.0, max_value=150.0, value=78.0, step=0.1, key="lab_v7_bel")
+        u_boyun = st.slider("Boyun Çevresi (cm):", min_value=20.0, max_value=60.0, value=38.0, step=0.1, key="lab_v7_boyun")
+        
+        st.write("---")
+        # 1RM Güç Testi Parametreleri
+        u_lift_w = st.slider("Kaldırılan Ağırlık (kg):", min_value=10, max_value=250, value=100, step=2, key="lab_v7_liftw")
+        u_lift_r = st.slider("Yapılan Tekrar Sayısı:", min_value=1, max_value=20, value=2, step=1, key="lab_v7_liftr")
+
+    # 📊 SAĞ TARAF: REAL-TIME BİLİMSEL ÇIKTI PANAROMASI (OUTPUTS)
+    with col_out:
+        st.markdown("### 📊 GERÇEK ZAMANLI ANALİZ ÇIKTILARI")
+
+        # 1️⃣ MATEMATİK MOTORU: VÜCUT KİTLE İNDEKSİ (VKİ)
+        a_m = u_boy / 100
+        vki = u_kilo / (a_m * a_m)
+        min_id = 18.5 * a_m * a_m
+        max_id = 24.9 * a_m * a_m
+        
+        if vki < 18.5: vki_lbl, vki_clr = "Zayıf", "#38bdf8"
+        elif vki <= 24.9: vki_lbl, vki_clr = "Normal", "#34d399"
+        elif vki <= 29.9: vki_lbl, vki_clr = "Fazla Kilolu", "#fbbf24"
+        else: vki_lbl, vki_clr = "Obez", "#fb7185"
+
+        # 2️⃣ MATEMATİK MOTORU: MIFFLIN-ST JEOR & TDEE & MAKROLAR
+        if u_cins == "Erkek":
+            bmr = (10.0 * u_kilo) + (6.25 * u_boy) - (5.0 * u_yas) + 5.0
         else:
-            label = "Obez"
-            color = "#fb7185" # Rose-400
-            bg_badge = "#f43f5e" # Rose-500
-            aciklama = "Profesyonel destek al."
-            detay = "Tip 2 diyabet, kalp hastalığı ve eklem problemleri riski belirgin biçimde artar. Yaşam tarzı değişikliği önerilir."
+            bmr = (10.0 * u_kilo) + (6.25 * u_boy) - (5.0 * u_yas) - 161.0
+            
+        carpan_map = {"Hareketsiz (1.2)": 1.2, "Hafif Aktif (1.375)": 1.375, "Orta Aktif (1.55)": 1.55, "Çok Aktif (1.725)": 1.725, "Ekstra Aktif (1.9)": 1.9}
+        tdee = bmr * carpan_map[u_akt]
+        
+        if "KİLO VER" in u_hed: hedef_kcal = tdee - 500
+        elif "KAS YAP" in u_hed: hedef_kcal = tdee + 300
+        else: hedef_kcal = tdee
+        
+        p_g = (hedef_kcal * (u_prot_pct / 100)) / 4
+        f_g = (hedef_kcal * 0.25) / 9
+        c_g = (hedef_kcal * ((100 - u_prot_pct - 25) / 100)) / 4
 
-        # Dinamik Kilo Farkı Durumu
-        if i_kilo < min_ideal:
-            fark_metni = f"+{round(min_ideal - i_kilo, 1)} kg al"
-            fark_color = "#38bdf8"
-        elif i_kilo > max_ideal:
-            fark_metni = f"-{round(i_kilo - max_ideal, 1)} kg ver"
-            fark_color = "#fb7185"
+        # 3️⃣ MATEMATİK MOTORU: US NAVY VÜCUT YAĞ ORANI
+        if u_bel > u_boyun:
+            yag_pct = 86.010 * math.log10(u_bel - u_boyun) - 70.041 * math.log10(u_boy) + 36.76
         else:
-            fark_metni = "Dengeli"
-            fark_color = "#34d399"
+            yag_pct = 0.0
 
-        # Sağ Panel Orijinal UI Çıktısı (Slider oynatıldığı an anlık tepki verir)
+        # 4️⃣ MATEMATİK MOTORU: 1RM EPLEY
+        one_rm = u_lift_w if u_lift_r == 1 else u_lift_w * (1.0 + (u_lift_r / 30.0))
+
+        # 5️⃣ MATEMATİK MOTORU: SU & KALP HIZI (TANAKA)
+        su_ml = (u_kilo * 35) + 1000 # Temel hidrasyon + sporcu payı
+        mkh = 208 - (0.7 * u_yas)
+
+        # 🖥️ UI KARTLARININ OTOMATİK RENDER EDİLMESİ amınakoyim
         st.markdown(f"""
-            <div class="result-box" style="border: 2px solid {color};">
-                <p style="color: #8B949E; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; text-align: center; margin-bottom: 5px;">Vücut Kitle İndeksiniz</p>
-                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px;">
-                    <span style="color: #FFFFFF; font-size: 55px; font-weight: bold;">{s_vki}</span>
-                    <div style="text-align: left;">
-                        <span style="color: #8B949E; font-size: 12px; display: block;">kg/m²</span>
-                        <span style="background-color: {bg_badge}; color: #000000; font-weight: bold; text-transform: uppercase; font-size: 11px; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-top: 2px;">{label}</span>
-                    </div>
+            <div class="matrix-card" style="border-left: 5px solid {vki_clr};">
+                <span style="color: #8B949E; font-size: 12px; font-weight: bold;">01 // VÜCUT KİTLE İNDEKSİ & İDEAL KİLO</span>
+                <h3 style="margin: 5px 0 0 0; color: #FFFFFF;">VKİ: <span style="color: {vki_clr}; font-size: 24px;">{vki:.1f}</span> ({vki_lbl})</h3>
+                <p style="color: #8B949E; font-size: 13px; margin: 3px 0 0 0;">İdeal Kilo Aralığın: <b>{min_id:.1f} - {max_id:.1f} kg</b></p>
+            </div>
+            
+            <div class="matrix-card" style="border-left: 5px solid #FFA500;">
+                <span style="color: #8B949E; font-size: 12px; font-weight: bold;">02 // MİFFLİN-ST JEOR & TDEE ENERJİ REAKTÖRÜ</span>
+                <h3 style="margin: 5px 0 0 0; color: #FFFFFF;">Hedef Kalori: <span class="neon-text-orange" style="font-size: 24px;">{int(hedef_kcal)} kcal</span></h3>
+                <p style="color: #8B949E; font-size: 13px; margin: 3px 0 0 0;">BMR (Bazal): {int(bmr)} kcal | TDEE (Yaktığın): {int(tdee)} kcal</p>
+            </div>
+            
+            <div class="matrix-card" style="border-left: 5px solid #00FFCC;">
+                <span style="color: #8B949E; font-size: 12px; font-weight: bold;">03 // GOKALAF GERÇEK MAKRO DAĞILIMI</span>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span style="color: #FFFFFF;">🍗 Protein: <b class="neon-text-cyan">{int(p_g)}g</b></span>
+                    <span style="color: #FFFFFF;">🍚 Karbonhidrat: <b class="neon-text-orange">{int(c_g)}g</b></span>
+                    <span style="color: #FFFFFF;">🥑 Yağ: <b class="neon-text-pink">{int(f_g)}g</b></span>
                 </div>
-                <div style="background-color: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 20px;">
-                    <p style="color: {color}; font-weight: bold; margin: 0; font-size: 14px;">{aciklama}</p>
-                    <p style="color: #8B949E; margin: 5px 0 0 0; font-size: 12px; line-height: 1.4;">{detay}</p>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div style="background-color: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="color: #8B949E; font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 2px;">İdeal Kilo Aralığı</span>
-                        <span style="color: #FFFFFF; font-size: 16px; font-weight: bold;">{min_ideal} - {max_ideal} <span style="font-size: 11px; color: #8B949E;">kg</span></span>
-                    </div>
-                    <div style="background-color: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <span style="color: #8B949E; font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 2px;">Kilo Farkı</span>
-                        <span style="color: {fark_color}; font-size: 16px; font-weight: bold;">{fark_metni}</span>
-                    </div>
+            </div>
+            
+            <div class="matrix-card" style="border-left: 5px solid #9932CC;">
+                <span style="color: #8B949E; font-size: 12px; font-weight: bold;">04 // US NAVY GERÇEK VÜCUT YAĞ ORANI</span>
+                <h3 style="margin: 5px 0 0 0; color: #FFFFFF;">Yağ Oranı: <span class="neon-text-purple" style="font-size: 24px;">%{yag_pct:.1f}</span></h3>
+                <p style="color: #8B949E; font-size: 13px; margin: 3px 0 0 0;">Yağsız Kas Kütlen: <b>{u_kilo * (1 - yag_pct/100):.1f} kg</b> | Saf Yağ Kütlen: <b>{u_kilo * (yag_pct/100):.1f} kg</b></p>
+            </div>
+            
+            <div class="matrix-card" style="border-left: 5px solid #FF0055;">
+                <span style="color: #8B949E; font-size: 12px; font-weight: bold;">05 // 1RM EPLEY MAKSİMAL GÜÇ SENSÖRÜ</span>
+                <h3 style="margin: 5px 0 0 0; color: #FFFFFF;">Tahmini 1RM: <span class="neon-text-pink" style="font-size: 24px;">{one_rm:.1f} KG</span></h3>
+                <p style="color: #8B949E; font-size: 13px; margin: 3px 0 0 0;">Hipertrofi Aralığın (%65-85): {int(one_rm*0.65)}-{int(one_rm*0.85)} kg | Güç Aralığın (%85-95): {int(one_rm*0.85)}-{int(one_rm*0.95)} kg</p>
+            </div>
+            
+            <div class="matrix-card" style="border-left: 5px solid #00FFFF;">
+                <span style="color: #8B949E; font-size: 12px; font-weight: bold;">06 // HİDRASYON & KALP HIZI KONTROLÜ</span>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span style="color: #FFFFFF;">🚰 Günlük Su İhtiyacı: <b style="color: #00FFFF;">{su_ml/1000:.2f} Litre</b></span>
+                    <span style="color: #FFFFFF;">❤️ Maks Kalp Hızı (Tanaka): <b style="color: #FF0055;">{int(mkh)} bpm</b></span>
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
+    # ==========================================
+    # 📚 ALT KISIM: AKORDEON REHBERLER (SABİT)
+    # ==========================================
     st.write("---")
-
-    # ==========================================
-    # 📚 ALT KISIM: GOKALAF BÜTÜNSEL REHBER AKORDEONLARI (SABİT)
-    # ==========================================
     st.subheader("📚 MACROFLOW // BİLİMSEL SPORCU ANSİKLOPEDİSİ")
-
+    
     with st.expander("⚖️ Boy Kilo Endeksi ve Yorumlama Rehberi"):
         st.markdown("### Boy Kilo Endeksi Nedir? Nasıl Hesaplanır?\nBoy Kilo Endeksi (BKE), vücut ağırlığını boy ile karşılaştıran ve sağlık riskini değerlendirmeye yardımcı olan bir ölçümdür...")
     with st.expander("🔥 Kalori Hesaplama ve Mifflin-St Jeor Denklemi"):
