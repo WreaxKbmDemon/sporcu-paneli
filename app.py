@@ -38,13 +38,12 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 ])
 
 # ==========================================
-# 👤 TAB 1: SPORCU PANELİ & GRAFİK ÖZET (GÜNCELLENDİ 🎯)
+# 👤 TAB 1: SPORCU PANELİ & GRAFİK ÖZET
 # ==========================================
 with tab1:
     col1, col2 = st.columns([1, 2])
     with col1:
         st.subheader("📋 Sporcu Profil Logları")
-        # Yağ oranı tam istediğin gibi kalibre edildi aslanım
         st.info("**Eren** | 16 Yaş (9-Bilişim)\n\n**Boy:** 173 cm | **Bel:** 78 cm 🎯\n\n**Durum:** Yağ Oranı %11,5-11")
         st.subheader("🔥 Günlük Makro Çıktısı")
         st.code("Kalori: ~1700-2000 kcal\nProtein: ~140-195.5g (Çiğden)\nCarb: ~137.2-250g\nSu Hedefi: 4.5 - 5 Litre 🚰")
@@ -60,7 +59,7 @@ with tab1:
             st.warning("⚠️ Veri tabanında henüz kayıtlı veri yok! Yan sekmeden ilk verini gir amınakoyim!")
 
 # ==========================================
-# 📝 TAB 2: VERİ GİRİŞ REAKTÖRÜ (BÜYÜK F HATASI FIXLENDİ 🚀)
+# 📝 TAB 2: VERİ GİRİŞ REAKTÖRÜ
 # ==========================================
 with tab2:
     st.subheader("🚀 Telefondan Anlık Veri Giriş Paneli")
@@ -87,7 +86,6 @@ with tab2:
             df_current = pd.concat([df_current, new_row], ignore_index=True)
             
         df_current.to_csv(CSV_FILE, index=False)
-        # İşte o hata veren büyük F harfi küçük f yapılarak jilet gibi debug edildi amınakoyim!
         st.success(f"✅ Veriler ve Notunuz `data/sporcu_verileri.csv` dosyasına jilet gibi işlendi! Sayfa güncellendi amınakoyim.")
 
     st.write("---")
@@ -110,7 +108,7 @@ with tab3:
         st.warning("Karb döngüsü için kalibre edilecektir.")
 
 # ==========================================
-# 🏃‍♂️ TAB 4: KARDİYO TAKİP PLANI
+# RUN TAB 4: KARDİYO TAKİP PLANI
 # ==========================================
 with tab4:
     st.subheader("⏱️ Haftalık Kardiyo Takip Matriksi")
@@ -146,4 +144,9 @@ with tab5:
 # 💊 TAB 6: SUPPLEMENT & CYCLE
 # ==========================================
 with tab6:
-    st.subheader("💊 Güncel Supplement Enjeksiyon
+    st.subheader("💊 Güncel Supplement Enjeksiyon Zamanlaması")
+    st.table(pd.DataFrame({
+        "Dönem / Safha": ["💥 SPOR ÖNCESİ", "💥 SPOR ARASI", "💤 YATMADAN 15-20 DK ÖNCE", "💤 YATMADAN 15-20 DK ÖNCE", "💤 YATMADAN 15-20 DK ÖNCE"],
+        "Takviye İçeriği": ["0.75 Ölçek Pre-Workout + 4 Kapsül L-Carnitine", "2 Kapsül Thermo Burner 🔥", "5 Gram Creatine", "1 Kapsül Zinc (Çinko)", "1-2 Gram Magnezyum L-Threonate"],
+        "Hedef Kodlama": ["Maksimum Odak ve Yağ Yakımı", "Termojenik Ateşleme", "Gece ATP Hücre Dolumu", "Testosteron Koruma Kalkanı", "REM Derin Uyku & CNS Reset"]
+    }))
