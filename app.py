@@ -12,7 +12,7 @@ from modules.supplement import render_supplement_tab
 from modules.cardio import render_cardio_tab
 
 # 🖥️ SAYFA YAPILANDIRMASI
-st.set_page_config(page_title="SPORCU PANELİ V2.6", layout="wide")
+st.set_page_config(page_title="SPORCU PANELİ V3.0", layout="wide")
 
 def load_css(file_name):
     if os.path.exists(file_name):
@@ -21,8 +21,8 @@ def load_css(file_name):
 
 load_css("assets/style.css")
 
-st.title("⚡ MACROFLOW // SPORCU PANELİ - FULL HYPERDRIVE V2.6")
-st.write(f"⚙️ Sistem: AKILLI NOT BELLEĞİ + MODÜLER MİMARİ AKTİF | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")
+st.title("⚡ MACROFLOW // SPORCU PANELİ V3.0")
+st.write(f"⚙️ Sistem Stabil | 📅 Bugün: {datetime.now().strftime('%d.%m.%Y')}")
 
 CSV_FILE = "data/sporcu_verileri.csv"
 
@@ -41,10 +41,10 @@ if not df_read_init.empty and "Gunluk_Not" in df_read_init.columns:
     if pd.notna(son_not) and str(son_not).strip() != "":
         varsayilan_not = str(son_not)
 
-# 🗂️ 7 EFSANE SEKME OLUŞTURULDU
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-    "👤 Sporcu Paneli", "📝 Veri Giriş Reaktörü", "📊 Gelişmiş Analiz", 
-    "🍗 Beslenme Planı", "🏃‍♂️ Kardiyo Takip", "🏋️‍♂️ Antrenman Takip", "💊 Supplement & Hesaplayıcı"
+# 🗂️ O ESKİ GEREKSİZ TÜM SEKMELERİ SİLDİK VE "ARAÇLAR"A ÇEVİRDİK AMINAKOYIM
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "👤 Sporcu Paneli", "📝 Veri Girişi", "🍗 Beslenme", 
+    "🏃‍♂️ Kardiyo", "🏋️‍♂️ Antrenman", "🧱 ARAÇLAR"
 ])
 
 # TAB 1: ÖZET PANEL
@@ -90,28 +90,24 @@ with tab2:
             df_current = pd.concat([df_current, new_row], ignore_index=True)
             
         df_current.to_csv(CSV_FILE, index=False)
-        st.success(f"✅ Veriler ve Notunuz başarıyla mühürlendi! Sayfayı yenileyebilirsin aslanım.")
+        st.success(f"✅ Veriler mühürlendi aslanım.")
         st.rerun()
 
     st.write("---")
     st.dataframe(pd.read_csv(CSV_FILE), use_container_width=True)
 
-# TAB 3: GELİŞMİŞ ANALİZ
+# TAB 3: BESLENME
 with tab3:
-    render_analytics_tab(CSV_FILE)
-
-# TAB 4: BESLENME PLANI
-with tab4:
     render_nutrition_tab()
 
-# TAB 5: KARDİYO
-with tab5:
+# TAB 4: KARDİYO
+with tab4:
     render_cardio_tab()
 
-# TAB 6: ANTRENMAN TAKİP
-with tab6:
+# TAB 5: ANTRENMAN
+with tab5:
     render_workout_tab()
 
-# TAB 7: SUPPLEMENT VE HESAPLAYICI
-with tab7:
-    render_supplement_tab()
+# TAB 6: ARAÇLAR (YENİLENEN MODÜL ENJEKSİYONU 🚀)
+with tab6:
+    render_analytics_tab(CSV_FILE)

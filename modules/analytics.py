@@ -1,12 +1,7 @@
 import streamlit as st
 
 def render_analytics_tab(csv_file):
-    # Sol taraftaki sidebar veya başlığı "ARAÇLAR" olarak güncelliyoruz
-    st.title("🧱 ARAÇLAR (GOKALAF %100 ORİJİNAL REPLİKA)")
-    st.write("Doğrudan kaynak koddan çekilen Boy Kilo Endeksi hesaplama motoru test sürümü amınakoyim!")
-    st.write("---")
-
-    # CSS Tasarımı - Sitedeki Dark Mode ve Neon Yeşil/Cyan Çizgiler
+    # İstediğin gibi tüm o üst yazıları ve "Test Sürümü" yazılarını komple sildik amınakoyim!
     st.markdown("""
         <style>
             .stSlider [data-baseweb="slider"] { margin-bottom: 20px; }
@@ -25,52 +20,46 @@ def render_analytics_tab(csv_file):
         st.markdown("<h3 style='color: #FFFFFF; font-size: 18px;'>📋 ÖLÇÜMLERİNİZ</h3>", unsafe_allow_html=True)
         st.write("Boy ve kilo bilgilerinizi girin")
         
-        # Orijinal JS slider aralıkları (Boy: 140-220, Kilo: 35-160)
         d_boy = st.slider("Boyunuz (cm)", min_value=140, max_value=220, value=170, step=1, key="gk_js_boy")
         i_kilo = st.slider("Kilonuz (kg)", min_value=35.0, max_value=160.0, value=70.0, step=0.5, key="gk_js_kilo")
         w_cins = st.selectbox("Cinsiyetiniz", ["Erkek", "Kadın"], key="gk_js_cins")
         
-        # Orijinal Hesapla Butonu
         btn_hesapla = st.button("⚖️ HESAPLA", use_container_width=True)
 
     with col2:
         if btn_hesapla:
-            # 📐 JAVASCRIPT'TEN BİREBİR KOPYALANAN MATEMATİK MOTORU
             a_metre = d_boy / 100
             n_bke = i_kilo / (a_metre * a_metre)
-            s_bke = round(n_bke, 1) # JS: parseFloat(n.toFixed(1))
+            s_bke = round(n_bke, 1)
             
-            # İdeal kilo limitleri
             min_ideal = round(18.5 * a_metre * a_metre, 1)
             max_ideal = round(24.9 * a_metre * a_metre, 1)
             
-            # JS: K(s) durum kontrol blokları ve renk mühürleri
             if s_bke < 18.5:
                 label = "Düşük Kilo"
-                color = "#38bdf8" # sky-400
-                bg_badge = "#0284c7" # sky-500
+                color = "#38bdf8"
+                bg_badge = "#0284c7"
                 aciklama = "Kilo almanız önerilir."
                 detay = "Vücut kütleniz boyunuza göre düşük. Dengeli beslenme ile sağlıklı kilo alımı hedeflenebilir."
             elif s_bke < 25:
                 label = "Sağlıklı"
-                color = "#34d399" # emerald-400
-                bg_badge = "#10b981" # emerald-500
+                color = "#34d399"
+                bg_badge = "#10b981"
                 aciklama = "Harika! Formunu koru."
                 detay = "Boy ve kilonuz dengeli. Bu sağlıklı aralığı korumaya devam edin."
             elif s_bke < 30:
                 label = "Kilolu"
-                color = "#fbbf24" # amber-400
-                bg_badge = "#f59e0b" # amber-500
+                color = "#fbbf24"
+                bg_badge = "#f59e0b"
                 aciklama = "Kalori açığı oluşturmalısın."
                 detay = "Boyunuza göre biraz fazla kilonuz var. Beslenme düzeni ve egzersiz ile iyileştirilebilir."
             else:
                 label = "Obez"
-                color = "#fb7185" # rose-400
-                bg_badge = "#f43f5e" # rose-500
+                color = "#fb7185"
+                bg_badge = "#f43f5e"
                 aciklama = "Profesyonel destek al."
                 detay = "Sağlık riskleri açısından bir uzmana danışmanız önerilir."
 
-            # Kilo Farkı Dinamiği
             if i_kilo < min_ideal:
                 fark_metni = f"+{round(min_ideal - i_kilo, 1)} kg al"
                 fark_color = "#38bdf8"
@@ -81,7 +70,6 @@ def render_analytics_tab(csv_file):
                 fark_metni = "Dengeli"
                 fark_color = "#34d399"
 
-            # Sağ Panel Gokalaf Birebir UI Render
             st.markdown(f"""
                 <div class="result-box" style="border: 2px solid {color};">
                     <p style="color: #8B949E; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; text-align: center; margin-bottom: 5px;">Boy Kilo Endeksiniz</p>
@@ -109,7 +97,6 @@ def render_analytics_tab(csv_file):
                 </div>
             """, unsafe_allow_html=True)
         else:
-            # Butona basılmadan önceki orijinal bekleme ekranı
             st.markdown("""
                 <div class="result-box" style="border: 1px dashed #30363D; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h3 style="color: #FFFFFF; font-size: 18px; margin-bottom: 5px;">⏳ Sonuç Bekleniyor</h3>
